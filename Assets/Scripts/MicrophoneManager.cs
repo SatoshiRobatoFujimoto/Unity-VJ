@@ -7,8 +7,11 @@ using UnityEngine;
 public class MicrophoneManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
+		foreach (string device in Microphone.devices) {
+            Debug.Log("Name: " + device);
+        }
 		var audio = GetComponent<AudioSource>();
-		audio.clip = Microphone.Start(null, true, 10, 44100);
+		audio.clip = Microphone.Start("Soundflower (2ch)", true, 10, 44100);
 		audio.loop = true;
         while (Microphone.GetPosition(null) <= 0) {}
 		audio.Play();
