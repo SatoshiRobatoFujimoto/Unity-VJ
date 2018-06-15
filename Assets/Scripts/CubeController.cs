@@ -12,6 +12,6 @@ public class CubeController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		this.transform.localScale = new Vector3(spectrum.getHigh() * 5 + 2, spectrum.getMid() * 5 + 2, spectrum.getLow() * 5 + 2);
+		this.transform.localScale = new Vector3(spectrum.getHigh() * 2 + 1, spectrum.getMid() * 2 + 1, spectrum.getLow() * 2 + 1);
 	}
 }

@@ -13,7 +13,7 @@ public class MainCameraManager : MonoBehaviour {
 	void Update () {
 		this.gameObject.transform.position = new Vector3(
 			this.gameObject.transform.position.x,
-			0,
+			this.gameObject.transform.position.y,
 			this.gameObject.transform.position.z
 		);
 	}

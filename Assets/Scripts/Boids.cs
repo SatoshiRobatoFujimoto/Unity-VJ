@@ -28,7 +28,7 @@ public class Boids : MonoBehaviour {
         	this.BoidsChildren[i].transform.position = new Vector3(
 				Random.Range(-30f, 30f),
 				Random.Range(-10f, 60f),
-				Random.Range(-30f, 30f)
+				Random.Range(-30f, 0f)
 			);
 		}
 	}
@@ -44,7 +44,7 @@ public class Boids : MonoBehaviour {
 
 			Rigidbody rigibody = child.GetComponent<Rigidbody>();
 			Vector3 direction = (rigibody.velocity.normalized * this.Turbulence + dirToCenter * (1 - this.Turbulence)).normalized;
-			direction *= 5f;
+			direction *= spectrum.getLow() * 30f;
 			rigibody.velocity = direction;
 		}
 
@@ -73,15 +73,15 @@ public class Boids : MonoBehaviour {
 			Rigidbody rigibody = child.GetComponent<Rigidbody>();
 			rigibody.velocity = rigibody.velocity * this.Turbulence + averageVelocity * (1f - this.Turbulence);
 			child.transform.LookAt(center);
-			child.transform.localScale = new Vector3(spectrum.getLow() * 5f + 0.5f, spectrum.getLow() * 5f + 0.5f, spectrum.getLow() * 5f + 0.5f);
+			child.transform.localScale = new Vector3(spectrum.getLow() * 1f + 0.2f, spectrum.getLow() * 1f + 0.2f, spectrum.getLow() * 1f + 0.2f);
 		}
 	}
 
 	private void updateBoss(){
 		this.BoidsBoss.transform.position = new Vector3(
-			Mathf.Cos(Time.time) * 10f,
-			Mathf.Sin(Time.time) * 10f,
-			Mathf.Cos(Time.time) * 10f
+			Mathf.Cos(Time.time * 2.3f) * 3f,
+			Mathf.Sin(Time.time) * 1f + 2f,
+			0
 		);
 	}
 
