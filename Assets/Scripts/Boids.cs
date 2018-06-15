@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Boids : MonoBehaviour {
+	GlobalManager global;
+
 	public int MaxChild = 100;
 	public GameObject BoidsChild;
 	public GameObject[] BoidsChildren;
@@ -10,15 +12,22 @@ public class Boids : MonoBehaviour {
 	public GameObject BoidsBoss;
 	public GameObject BoidsCenter;
 
-	public float Turbulence = 1f;
+	private float Turbulence = 1;
 
-	public float Distance = 2;
+	private float Distance = 1;
+
+	private float speed = 0;
 
 	SpectrumAnalyzer spectrum;
 	
 
 	// Use this for initialization
 	void Start () {
+		global = GameObject.Find("GlobalManager").GetComponent<GlobalManager>();
+		
+		Turbulence = global.boidsTurbulence;
+		Distance = global.boidsDistance;
+
 		spectrum = GameObject.Find("Audio Source").GetComponent<SpectrumAnalyzer>();
 
 		this.BoidsChildren = new GameObject[MaxChild];
@@ -35,29 +44,23 @@ public class Boids : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		Turbulence = global.boidsTurbulence;
+		Distance = global.boidsDistance;
+
 		updateBoss();
 		Vector3 center = getCenter();
+		speed += spectrum.getLow() * 2f;
+		speed -= speed * 0.05f;
 
 		//中央に移動しようとする
 		foreach (GameObject child in this.BoidsChildren) {	
-			Vector3 dirToCenter = (center - child.transform.position).normalized;
-
-			Rigidbody rigibody = child.GetComponent<Rigidbody>();
-			Vector3 direction = (rigibody.velocity.normalized * this.Turbulence + dirToCenter * (1 - this.Turbulence)).normalized;
-			direction *= spectrum.getLow() * 30f;
-			rigibody.velocity = direction;
+			cohesion(child, center);
 		}
 
 		//距離を保つ
 		foreach (GameObject child_a in this.BoidsChildren) {	
 			foreach (GameObject child_b in this.BoidsChildren) {	
-				Rigidbody rigibody_a = child_a.GetComponent<Rigidbody>();
-				Rigidbody rigibody_b = child_b.GetComponent<Rigidbody>();
-				if (child_a == child_b) continue;
-				Vector3 diff = child_a.transform.position - child_b.transform.position;
-				if (diff.magnitude < Random.Range(0, this.Distance)){
-					rigibody_a.velocity = diff.normalized * rigibody_a.velocity.magnitude;
-		        }
+				separation(child_a, child_b);
 			}
 		}
 
@@ -95,5 +98,24 @@ public class Boids : MonoBehaviour {
 		center /= 2;
 		this.BoidsCenter.transform.position = center;
 		return center;
+	}
+
+	private void cohesion(GameObject child, Vector3 center){
+		Vector3 dirToCenter = (center - child.transform.position).normalized;
+
+		Rigidbody rigibody = child.GetComponent<Rigidbody>();
+		Vector3 direction = (rigibody.velocity.normalized * this.Turbulence + dirToCenter * (1 - this.Turbulence)).normalized;
+		direction *= speed;
+		rigibody.velocity = direction;
+	}
+
+	private void separation(GameObject child_a, GameObject child_b){
+		Rigidbody rigibody_a = child_a.GetComponent<Rigidbody>();
+		Rigidbody rigibody_b = child_b.GetComponent<Rigidbody>();
+		if (child_a == child_b) return;
+		Vector3 diff = child_a.transform.position - child_b.transform.position;
+		if (diff.magnitude < Random.Range(0, this.Distance)){
+			rigibody_a.velocity = diff.normalized * rigibody_a.velocity.magnitude;
+        }
 	}
 }
