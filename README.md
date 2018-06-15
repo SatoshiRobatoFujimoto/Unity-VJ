@@ -1,6 +1,10 @@
 # Unity-VJ
 UnityでVJ的なことをする実験
 
+# Package
+keijiro/MidiJack
+https://github.com/keijiro/MidiJack
+
 ## やりたいことリスト
 * 音に合わせて動かす
     * [x] 外部のオーディオから波形を取得して扱えるようにする
